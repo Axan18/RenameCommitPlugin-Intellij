@@ -1,0 +1,16 @@
+<idea-plugin>
+    <id>axan18.MethodCallPathDetectorPlugin</id>
+    <name>MethodCallPathDetectorPlugin</name>
+    <vendor email="bartosz_janusz731@protonmail.com" url="https://github.com/Axan18">Bartosz Janusz</vendor>
+
+    <actions>
+        <action id="axan18.commitrenameplugin.CommitRenameAction"
+                class="axan18.commitrenameplugin.CommitRenameAction"
+                text="Rename Current Commit"
+                description="Rename commit in the current branch.">
+            <add-to-group group-id="VcsGroups" anchor="first"/>
+        </action>
+    </actions>
+    <extensions defaultExtensionNs="com.intellij">
+    </extensions>
+</idea-plugin>
