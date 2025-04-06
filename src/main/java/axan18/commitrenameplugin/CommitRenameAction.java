@@ -40,12 +40,18 @@ public class CommitRenameAction extends AnAction {
             Messages.showMessageDialog("Repository not found", "Error", Messages.getErrorIcon());
             return; // No repository found
         }
-        String newCommitMessage = Messages.showInputDialog(project, "Enter new commit message:", "Commit Rename", Messages.getQuestionIcon());
-        if (newCommitMessage == null || newCommitMessage.isEmpty()) {
-            Messages.showMessageDialog("Commit message cannot be empty", "Error", Messages.getErrorIcon());
-            return; // No commit message provided
+        String newCommitMessage;
+        while (true) {
+            newCommitMessage = Messages.showInputDialog(project, "Enter new commit message:", "Rename Commit", Messages.getQuestionIcon());
+            if (newCommitMessage == null) // User cancelled the input dialog
+                return;
+            else if (newCommitMessage.isEmpty()) // Empty commit message
+                Messages.showMessageDialog("Commit message cannot be empty", "Error", Messages.getErrorIcon());
+             else  // Valid commit message
+                break;
         }
-        Task.Backgroundable task = new Task.Backgroundable(project, "Amending Last Commit") {
+        String finalNewCommitMessage = newCommitMessage;
+        Task.Backgroundable task = new Task.Backgroundable(project, "Amending last commit") {
             @Override
             public void run(@NotNull ProgressIndicator indicator) {
                 VirtualFile root = repository.getRoot();
@@ -61,7 +67,7 @@ public class CommitRenameAction extends AnAction {
                 GitLineHandler handler = new GitLineHandler(project, root, GitCommand.COMMIT);
                 handler.setSilent(false);
                 handler.addParameters("--amend");
-                handler.addParameters("-m", newCommitMessage);
+                handler.addParameters("-m", finalNewCommitMessage);
                 GitCommandResult result = Git.getInstance().runCommand(handler);
                 if (!result.success()) {
                     ApplicationManager.getApplication().invokeLater(() ->
