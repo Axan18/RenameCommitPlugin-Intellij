@@ -6,7 +6,6 @@ import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vcs.VcsException;
-import git4idea.GitRemoteBranch;
 import git4idea.commands.Git;
 import git4idea.commands.GitCommand;
 import git4idea.commands.GitCommandResult;
@@ -14,8 +13,6 @@ import git4idea.commands.GitLineHandler;
 import git4idea.repo.GitRepository;
 import git4idea.repo.GitRepositoryManager;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Collection;
 
 public class GitService {
     private final Project project;
@@ -104,17 +101,5 @@ public class GitService {
         String remoteCommitHash = Git.getInstance().runCommand(remoteCommitHandler).getOutput().get(0).split(" ")[1];
 
         return localCommitHash.equals(remoteCommitHash);
-    }
-
-    private String getLastCommitId() throws VcsException {
-        GitLineHandler handler = new GitLineHandler(repository.getProject(), repository.getRoot(), GitCommand.LOG);
-        handler.addParameters("-n", "1"); // Get the last commit
-        GitCommandResult result = Git.getInstance().runCommand(handler);
-        if (!result.success()) {
-            throw new VcsException("Failed to get last commit.");
-        }
-
-        String output = result.getOutputOrThrow();  // extracting commit ID from the output
-        return output.split("\n")[0].split(" ")[1];
     }
 }
